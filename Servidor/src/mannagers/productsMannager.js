@@ -4,7 +4,7 @@ import { v4 as uuid } from "uuid"
 export class productManager{
     constructor(){
         this.products = [];
-        this.path= "./mannagers/products.json" //guardar info en archivo
+        this.path= "./src/mannagers/products.json" //guardar info en archivo
         
     }
 

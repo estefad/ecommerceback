@@ -1,8 +1,8 @@
 //inicializar config del backend - comando: npm run dev para iniciar y guardar servidor
 import express from "express"
-import userRoutes from './Router/user.router.js'
-import productsRoutes from './Router/products.router.js'
-import cartRoutes from './Router/cart.router.js'
+import userRoutes from './router/user.router.js'
+import productsRoutes from './router/products.router.js'
+import cartRoutes from './router/cart.router.js'
 
 //inicializar y ejecutar express
 const app = express()
@@ -43,11 +43,117 @@ app.listen(PORT, ()=>{
  
 
 
-// PRIMERA ENTREGA: 
+//socket - npm i socket.io
 /*
-servidor basado en node y express y que este en el puerto 8080
-dos rutas: /products y /carts
+import {Server}"socket.io"
 
+const httpServer= app.listen(PORT, ()=>{
+    console.log(`Servidor iniciado en el puerto ${PORT}`)
+})
+
+
+const io = new Server(httpServer)
+
+
+//por cada navegador que este solicitando conexion, se imprime nuevo...
+
+io.on("connection", (socket)=>{
+    console.log(`nuevo cliente conectado ${socket.id}`)
+
+    //recibir event en el servidor
+    socket.on("message", (data)=>{
+        console.log(data)
+    })
+})
+
+cliente:
+
+app.get("/", (req, res)=>{
+    res.render("index")
+})
+//crear index.handlebars
+
+
+agregar js a la carpeta public y a index.hand..
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/index.js"></script>
+
+en index.js - config el socket del lado del cliente
+const socket = io(); //ref a la libreria
+
+//enviar evento al servidor deben coincidir los nombre message de ambos lados
+socket.emit("message", "hola desde el front")
+
+
+
+//config server para mandar info a los clientes , individual, todos menos uno, todos
+//individual
+socket.emit("sock-individual", "solo para uno")
+
+//todos menos el client actual
+socket.broadcast.emit("sock-excluye-actual", "para todos menos el actual")
+
+//todos - io es el socket completo para todos
+io.emit("sock-todos", "para todos")
+
+//del lado del cliente
+
+//individual
+socket.on("sock-individual", (data)=>{
+    console.log(data)
+})
+
+//todos menos el actual
+socket.on("sock-excluye-actual", (data)=>{
+    console.log(data)
+})
+
+//todos
+socket.on("sock-todos", (data)=>{
+    console.log(data)
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+//que se puedan ver los productos en tiempo real a medida que se agregan
+//servidor
+
+let products = []
+io.on("connection", (socket)=>{
+    //mandar productos nuevos al cliente que se conecto
+    socket.on("product", (data)=>{
+        products.push(data)
+
+    //mandar todos los productos al cliente que se conecto
+        io.emit("products", products)
+})
+
+
+
+//cliente index.js
+socket.emit("product ", product)
+socket.on("products", (data)=>{
+    console.log(data)
+})
+
+///////////
+
+
+//chat con websocket
+//servidor
+
+   
 */
 
 
@@ -57,134 +163,4 @@ dos rutas: /products y /carts
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//endpoint - punto de entrada donde el cliente solicita info al servidor ejemplo: /saludo, /usuarios, etc
-//cada ruta se llama endpoint
-//metodo get - peticion a la ruta
-
-/* app.get('/', (req, res) => {
-    //responder al cliente en /=rura raiz
-     res.send("Mi primer servidor con express")
-
- })
-
- app.get("/saludo", (req, res)=>{
-     res.send("Hola te estoy saludando")
-})
-
- app.get("/bienvenida", (req, res)=>{
-    res.send(`<h1>MI PRIMER SERVIDOR!!!</h1>`)
- })
-
- app.get("/usuario", (req, res)=>{
-     const user = {
-         name: "juan",
-         edad: 30,
-         correo: "juan@mail.com"
-     } 
-     res.send(user)  
- })
-
-
-
-//req.body
-//que hacen
-
- //req.params - obtener elem dinamicos con : exp reconoce que es un elem dinamico que ingressa el cliente
- app.get("/parametros/:data", (req, res)=>{
-     const parametros = req.params.data
-
-    res.send(`El dato ingresado por el cliente es: ${parametros}`)
-})
-
-app.get("/parametros/:nombre/:apellido", (req, res)=>{
-    const nombre = req.params.nombre
-    const apellido = req.params.apellido
-
-    res.send(`El nombre completo es: ${nombre} ${apellido}`)
-})
-
-
-
-const usuarios =[
-    {id:1, nombre:"juan", edad:30},
-    {id:2, nombre:"pedro", edad:25},
-    {id:3, nombre:"maria", edad:35}
-]
-
-//todos los parametros por defecto son de tipo string
- app.get("/usuarios/:id", (req,res)=>{
-     const { id } = req.params
-    const user = usuarios.find(usuario => usuario.id === Number(id))
-    if(!user)return res.send(`no existe el usuario con id ${id}`)
-
-     res.send(user) 
- })
-
-//req.query ? http://localhost:8080/queries?nombre=Estefania simple
- //req.query ? http://localhost:8080/queries?nombre=Estefania&apellido=perez - concatenar
- //obtener datos de la url
- //usando ? el servidor sabe que estoy (como cliente) enviando una query / consulta
-
- app.get("/queries", (req,res)=>{
-     const { nombre, apellido } = req.query
-    if(!nombre || !apellido)return res.send("debe ingresar un nombre y apellido por querie")
-
-     res.send(`el nombre ingresado es ${nombre} ${apellido}`)
- })
-
- const usuarios2 = [
-     {id:1, nombre:"juan", edad:30, genero: "m"},
-     {id:2, nombre:"pedro", edad:25, genero: "m"},
-     {id:3, nombre:"maria", edad:35, genero: "f"}
-
- ]
- //filtrado con querie del lado del cliente
- app.get("/usuarios2", (req,res)=>{
-     const { genero } = req.query
-    if(!genero || (genero !== "m" && genero !== "f"))return res.send(usuarios2)
-    const users = usuarios2.filter(usuario => usuario.genero === genero)
-
-    res.send(users)
- })
-*/
-
-
-//EXPRESS AVANZADO
-//codigos de estado http - estado del proceso de una peticion, como inicia y como acaba
-//metodos de peticion
 
