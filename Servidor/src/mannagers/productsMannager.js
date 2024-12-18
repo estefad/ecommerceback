@@ -89,28 +89,4 @@ export class productManager{
 }
 
 
-//const product = new productManager()
-// product.addProduct(
-//     { 
-//         title: "producto 1",
-//         description: "descripcion producto 1",
-//         price: 1000,
-//         thumbnail: "https://via.placeholder.com/300/92c952",
-//         code: "ABC123",
-//         stock: 10,
-//         category: "miProducto"
-//     }
-// )
-
-// product.addProduct(
-//     { 
-//         title: "producto 2",
-//         description: "descripcion producto 2",
-//         price: 1000,
-//         thumbnail: "https://via.placeholder.com/300/92c952",
-//         code: "A123",
-//         stock: 12
-//     }
-// )
-
-// product.getProducts();
+//integrar a mongoose

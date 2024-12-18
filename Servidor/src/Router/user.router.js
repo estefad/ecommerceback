@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { checkId } from "../Middlewares/checkId.middleware.js"
+import { checkId } from "../dao/middlewares/checkId.middleware.js"
 
 const router = Router()
 

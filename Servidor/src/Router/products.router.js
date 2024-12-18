@@ -1,16 +1,34 @@
 import { Router } from "express"
 import {productManager} from'../mannagers/productsMannager.js'
+import { productModel } from "../dao/models/products.model.js"
+import { productDao } from "../dao/mongoDao/poducts.dao.js"
 
 const router = Router()
 
-const productMannager = new productManager()
-
-
 router.get("/", async (req,res)=>{
-    const {limit} = req.query
+    const {limit, page, sort, category, status} = req.query
     try {
-        const products = await productMannager.getProducts()
-        res.send(products)
+
+        const option = {
+            limit: limit || 10,
+            page: page || 1,
+            sort: {price: sort === "asc" ? 1 : -1},
+            category: category || null,
+            lean: true,
+        }
+
+        if(status){
+            const products = await productDao.getAll({status: status}, {option}) 
+            return res.json({status: "succes" , playload: products})
+        }
+
+        if(category){
+            const products = await productDao.getAll({category: category}, {option}) 
+            return res.json({status: "succes" , playload: products})
+        }
+
+        const products = await productDao.getAll({}, {option})
+        res.json({status: "succes" , playload: products})
         
     } catch (err) {
         console.log(err)
@@ -19,11 +37,12 @@ router.get("/", async (req,res)=>{
     
 })
 
-
+//buscar por id
 router.get("/:pid", async (req,res)=>{
     const {pid} = req.params
     try {
-        const product = await productMannager.getProductById(pid)
+
+        const product = await productDao.getById(pid)
         console.log(product)
         
         res.send(product)
@@ -34,13 +53,13 @@ router.get("/:pid", async (req,res)=>{
     }
 })
 
-//cargar producto
+//cargar nuevo producto
 router.post("/", async (req,res)=>{
     const body = req.body
     try {
-        const product = await productMannager.addProduct(body)
+        const product = await productDao.create(body)
         
-        res.send(product)
+        res.json({ playload: product})
 
     }catch (err){
         console.log(err)
@@ -48,13 +67,18 @@ router.post("/", async (req,res)=>{
     }
 })
 
-router.post("/:pid", async (req,res)=>{
+
+router.put("/:pid", async (req,res)=>{ 
     const {pid} = req.params
     const body = req.body
     try {
-        const product = await productMannager.updateProduct(pid, body)
+
+        const findProduct = await productDao.getById(pid)
+        if(!findProduct) return res.json({status:"error", message:`product id ${pid} no encontrado`})
+
+        const product = await productDao.update(pid, body)
         
-        res.send(product)
+        res.json({status: "succes" , playload: "products"})
 
     }catch (err){
         console.log(err)
@@ -66,9 +90,12 @@ router.delete("/:pid", async (req,res)=>{
     const {pid} = req.params
     
     try {
-        const product = await productMannager.deleteProduct(pid)
+        const findProduct = await productDao.delete(pid)
+        if(!findProduct) return res.json({status:"error", message:`product id ${pid} no encontrado`})
+
+        const product = await productDao.delete(pid)
         
-        res.send(product)
+       res.json({status: "succes" , playload: `product id ${pid} eliminado`})
 
     }catch (err){
         console.log(err)
