@@ -1,0 +1,76 @@
+
+//comandos basicos de mongo
+
+//seleccionamos la base a trabajar y si no existe, la creamos
+// use("clase12")
+
+//crear una coleccion
+// db.createCollection("usuarios")
+
+//crear e insertar un documento en la coleccion
+//db.usuarios.insertOne({nombre: "Ana",apellido: "Perez",edad: 30})
+
+//eliminar un usuario
+//db.usuarios.deleteOne({_id: ObjectId("674b3a4963a99c765ae85641")})
+
+//consultar los usuarios registrados
+// db.usuarios.find()
+
+// insertar varios docs a la coleccion
+// db.usuarios.insertMany(
+//      [
+//     {nombre: "Juan",apellido: "Garcia",edad: 25},
+//     {nombre: "Maria",apellido: "Lopez",edad: 35},
+//     {nombre: "Pedro",apellido: "Diaz",edad: 45}
+// ])
+
+
+//consultar por apellido
+//db.usuarios.find({edad: 25})
+
+//contar la cant de usuarios
+//db.usuarios.countDocuments({edad: 25})
+
+//busquedas con filtros--
+//sintaxis especifica de mongo para filtrado
+//traeme todos menos el nombre que paso
+// db.usuarios.find({nombre:{$not:{$eq: "Juan"}}})
+
+
+
+//PROYECCION
+//-hace ref a solo listar info importante, decirle a la db "solo necesito esto"
+// db.usuarios.find({filtro}, {proyeccion : true o false})
+// db.usuarios.find({}, {nombre: 1, apellido: 1})
+// db.usuarios.find({}, {nombre: 1})
+// db.usuarios.find({edad: 25}, {nombre: 1, apellido: 1})
+
+
+//SORT() 1asc -1desc
+// db.usuarios.find(otro filtro).sort({edad: 1, apellido: 1})
+// db.usuarios.find().sort({edad: 1, apellido: 1})
+
+
+//SKIP omite el num de docs indicados
+//que omitimos, de arriba hacia abajo
+// db.usuarios.find().skip(3)
+// db.usuarios.find().sort({nombre: 1}).skip(3)
+
+//LIMIT limita la cant de elem a mostrar
+//muestra los primeros si lo uso solo
+//con filtro podria ser un sort al azar
+// db.usuarios.find({apellido: "Perez"},{apellido:1, nombre:1}).sort({apellido:1, nombre:1}).limit(1)
+
+
+//UPDATE
+// db.usuarios.updateOne({filtro}, {nuevo valor}, {opciones})
+// db.usuarios.updateOne({nombre: "Juan"}, {$set:{edad:30}})
+// db.usuarios.updateOne({_id:ObjectId('674b47bd20657c5987f30d62')}, {$set:{edad:42}})
+
+
+//DELETE
+// db.usuarios.deleteOne({_id: ObjectId('674b47bd20657c5987f30d62')})
+// db.usuarios.deleteMany({}) vacio borra todo
+
+
+
