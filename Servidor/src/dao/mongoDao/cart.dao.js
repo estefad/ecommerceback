@@ -1,29 +1,29 @@
-import { cartModel } from "../models/cart.model.js"
+import  Cart  from "../models/cart.model.js"
 
 class CartDao {
     async getAll() {
-        return await cartModel.find()
+        return await Cart.find()
     }
 
     async getById(id) {
-        return await cartModel.findById(id).populate('products.product').exec()
+        return await Cart.findById(id).populate('products.product').exec()
         //exec(): Ejecuta la consulta
     }
 
     async create(data) {
-        return await cartModel.create(data)
+        return await Cart.create(data)
     }
 
     async update(id, data) {
-        return await cartModel.findByIdAndUpdate(id, data, { new: true }).populate('products.product').exec()
+        return await Cart.findByIdAndUpdate(id, data, { new: true }).populate('products.product').exec()
     }
 
     async delete(id) {
-        return await cartModel.findByIdAndDelete(id)
+        return await Cart.findByIdAndDelete(id)
     }
 
     async deleteProductInCart(cid, pid) {
-        const cart = await cartModel.findById(cid)
+        const cart = await Cart.findById(cid)
         if (!cart) {
             throw new Error('Carrito no encontrado')
         }
