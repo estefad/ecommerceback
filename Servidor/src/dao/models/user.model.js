@@ -1,4 +1,4 @@
-import { valid } from 'joi'
+
 import mongoose from 'mongoose'
 const Schema = mongoose.Schema
 
@@ -9,7 +9,7 @@ const userSchema = new Schema({
     age: { type: Number, required: true },
     password: { type: String, required: true },
     cart: { type: Schema.Types.ObjectId, ref: 'Cart' },
-    role: { type: String, default: 'user', valid: ["admin", "user"] }
+    role: { type: String, default: 'user', enum: ["admin", "user"] }
 })
 
 // Middleware de Mongoose para verificar el correo electrónico antes de guardar

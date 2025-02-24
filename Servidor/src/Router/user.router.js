@@ -1,11 +1,11 @@
 import { Router } from "express"
-import passport from "passport"
-import { validateDto } from '../dao/middlewares/validateDto.middleware.js'
-import userDto from '../dtos/user.dto.js'
-import { AuthController } from '../controller/auth.controller.js'
 import { checkId } from "../dao/middlewares/checkId.middleware.js"
+import { UserController } from "../controller/user.controller.js"
 
 const router = Router()
+
+
+router.get('/users', UserController.getUsers)
 
 router.use((req, res, next) => {
     console.log("se ejecuta endpoint de user")
@@ -68,19 +68,5 @@ router.delete("/:id", (req, res) => {
     res.status(200).send("user deleted")
 })
 
-// Ruta de registro con validación DTO
-router.post('/register', validateDto(userDto), (req, res, next) => {
-    passport.authenticate('register', (err, user, info) => {
-        if (err) {
-            return next(err)
-        }
-
-        if (!user) {
-            return res.status(400).json({ message: info.message })
-        }
-        req.user = user
-        AuthController.register(req, res)
-    })(req, res, next)
-})
 
 export default router
