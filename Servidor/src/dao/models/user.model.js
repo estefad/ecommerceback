@@ -9,7 +9,8 @@ const userSchema = new Schema({
     age: { type: Number, required: true },
     password: { type: String, required: true },
     cart: { type: Schema.Types.ObjectId, ref: 'Cart' },
-    role: { type: String, default: 'user', enum: ["admin", "user"] }
+    role: { type: String, default: 'user', enum: ["admin", "user"] },
+    products: [{ type: Schema.Types.ObjectId, ref: 'Product' }],
 })
 
 // Middleware de Mongoose para verificar el correo electrónico antes de guardar

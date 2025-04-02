@@ -11,6 +11,8 @@ import dotenv from 'dotenv'
 import { AuthController } from './controller/auth.controller.js'
 import { validateDto } from "./dao/middlewares/validateDto.middleware.js"
 import userDto from './dtos/user.dto.js'
+import { log, logger } from "./config/logger.js"
+import mocksRouter from './router/mock.router.js'
 
 // Cargar variables de entorno
 dotenv.config()
@@ -23,6 +25,7 @@ const app = express()
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())// Middleware para parsear cookies
+app.use(log) // Middleware de logueo para cada petición que se haga en el servidor
 
 initializePassport() // Inicializar Passport
 app.use(passport.initialize())
@@ -30,7 +33,7 @@ app.use(passport.initialize())
 app.use('/index', express.static("public")) // Utilizar archivos HTML, CSS 
 
 app.use((req, res, next) => {
-    console.log("Ruta a nivel app ejecutándose")
+    logger.info("Ruta a nivel app ejecutándose")
     next() // Una vez que se ejecuta, sale de la función y continúa con el resto de los endpoint
 })
 
@@ -38,6 +41,7 @@ app.use((req, res, next) => {
 app.use("/api/users", userRoutes)
 app.use("/api/products", productsRoutes)
 app.use("/api/carts", cartRoutes)
+app.use('/api/mocks', mocksRouter);
 
 
 // Rutas de autenticación
@@ -83,5 +87,5 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000 // Puerto dinámico
 // El puerto que usamos es para asegurarnos que no se esté usando
 app.listen(PORT, () => {
-    console.log(`Servidor iniciado en el puerto ${PORT}`)
+    logger.info(`Servidor iniciado en el puerto ${PORT}`)
 })
