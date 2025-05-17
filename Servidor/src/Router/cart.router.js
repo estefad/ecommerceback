@@ -56,25 +56,24 @@ router.get('/:cid', async (req, res) => {
 
 
 // Eliminar producto de carrito
+
 router.delete("/:cid/products/:pid", async (req, res) => {
-    const { cid, pid } = req.params
-
+    const { cid, pid } = req.params;
+  
     try {
-        const product = await productDao.getById(pid)
-        if (!product) return res.json({ status: "error", message: "Producto no encontrado" })
-
-        const cart = await cartDao.getById(cid)
-        if (!cart) return res.json({ status: "error", message: "Carrito no encontrado" })
-
-        cart.products = cart.products.filter(p => p.product.toString() !== pid)
-        await cart.save()
-
-        res.json({ status: "success", payload: cart })
+      const product = await productDao.getById(pid);
+      if (!product) return res.json({ status: "error", message: "Producto no encontrado" });
+  
+      const cart = await cartDao.deleteProductInCart(cid, pid);
+      if (!cart) return res.json({ status: "error", message: "Carrito no encontrado" });
+  
+      res.json({ status: "success", payload: cart });
     } catch (err) {
-        console.log(err)
-        res.status(500).send(err.message)
+      console.log(err);
+      res.status(500).send(err.message);
     }
-})
+  });
+  
 
 // Actualizar carrito con un arreglo de productos
 router.put('/:cid', async (req, res) => {
