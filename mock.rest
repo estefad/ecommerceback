@@ -1,9 +1,0 @@
-GET http://localhost:3000/api/mocks/mockingusers
-
-POST http://localhost:3000/api/mocks/generateData
-Content-Type: application/json
-
-{
-  "users": 20,
-  "products": 15
-}
