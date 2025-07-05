@@ -1,9 +1,12 @@
 import mongoose from "mongoose"
+import dotenv from "dotenv"
 
 
 export const connectMongoDB = async  () => {
     
-    mongoose.connect("mongodb+srv://stefanadominguez:1234@cluster0.vt1df.mongodb.net/test?retryWrites=true&w=majority&appName=Cluster0")
+// Cargar variables de entorno desde el archivo .env
+dotenv.config({ path: "./.env" })
+    mongoose.connect(process.env.MONGO_DB_URL)
 
     .then(() => console.log("MongoDB Connected..."))
     .catch(err => console.log(err)); 

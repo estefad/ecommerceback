@@ -8,7 +8,6 @@ También cuenta con, creacion de usuarios ficticios con mock, tests funcionales 
 
 ---
 
-## los .env estan incluidos en el repo del aplicativo
 
 ## EJECUCION DE LOS PUNTOS A ENTREGAR
 

@@ -19,7 +19,7 @@ import { log, logger } from "./config/logger.js"
 // Cargar variables de entorno
 dotenv.config()
 
-connectMongoDB()
+connectMongoDB() 
 
 // Inicializar y ejecutar express
 const app = express()
